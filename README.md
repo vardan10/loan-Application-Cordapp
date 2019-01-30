@@ -5,7 +5,7 @@
 # Loan Application Cordapp - Kotlin
 
 ## Architecture
-![Solution Architecture](https://raw.githubusercontent.com/vardan10/loan-Application-Cordapp/master/Architecture%20docs/Design%20Document.png)
+![Solution Architecture](https://raw.githubusercontent.com/vardan10/loan-Application-Cordapp/master/Architecture%20docs/Design%20Document.png?token=ATj6HFpi6IywJA-bk00aSnhH6bljrcjyks5cUUwEwA%3D%3D)
 
 ## Instructions for setting up
 
