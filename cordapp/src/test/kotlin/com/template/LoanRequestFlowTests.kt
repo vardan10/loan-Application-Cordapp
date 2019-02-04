@@ -43,7 +43,7 @@ class LoanRequestFlowTests {
     @Test
     @Throws(Exception::class)
     fun transactionConstructedByFlowHasOneLoanStateOutputWithTheCorrectParameters() {
-        val flow = LoanRequestFlow("Jhon",99 ,nodeB.info.legalIdentities[0])
+        val flow = LoanRequestFlow("Jhon",99 ,"PANCARD", nodeB.info.legalIdentities[0])
         val future = nodeA.startFlow(flow)
         network.runNetwork()
         val signedTransaction = future.get()
@@ -62,7 +62,7 @@ class LoanRequestFlowTests {
     @Test
     @Throws(Exception::class)
     fun transactionConstructedByFlowHasOneOutputUsingTheCorrectContract() {
-        val flow = LoanRequestFlow("Jhon",99 ,nodeB.info.legalIdentities[0])
+        val flow = LoanRequestFlow("Jhon",99 ,"PANCARD", nodeB.info.legalIdentities[0])
         val future = nodeA.startFlow(flow)
         network.runNetwork()
         val signedTransaction = future.get()
@@ -76,7 +76,7 @@ class LoanRequestFlowTests {
     @Test
     @Throws(Exception::class)
     fun transactionConstructedByFlowHasOneLoanRequestCommand() {
-        val flow = LoanRequestFlow("Jhon",99 ,nodeB.info.legalIdentities[0])
+        val flow = LoanRequestFlow("Jhon",99 ,"PANCARD", nodeB.info.legalIdentities[0])
         val future = nodeA.startFlow(flow)
         network.runNetwork()
         val signedTransaction = future.get()
@@ -90,7 +90,7 @@ class LoanRequestFlowTests {
     @Test
     @Throws(Exception::class)
     fun transactionConstructedByFlowHasOneCommandWithTheFinancyAgencyAsASigner() {
-        val flow = LoanRequestFlow("Jhon",99 ,nodeB.info.legalIdentities[0])
+        val flow = LoanRequestFlow("Jhon",99 ,"PANCARD", nodeB.info.legalIdentities[0])
         val future = nodeA.startFlow(flow)
         network.runNetwork()
         val signedTransaction = future.get()
@@ -105,7 +105,7 @@ class LoanRequestFlowTests {
     @Test
     @Throws(Exception::class)
     fun transactionConstructedByFlowHasNoInputsAttachmentsOrTimeWindows() {
-        val flow = LoanRequestFlow("Jhon",99 ,nodeB.info.legalIdentities[0])
+        val flow = LoanRequestFlow("Jhon",99 ,"PANCARD", nodeB.info.legalIdentities[0])
         val future = nodeA.startFlow(flow)
         network.runNetwork()
         val signedTransaction = future.get()
