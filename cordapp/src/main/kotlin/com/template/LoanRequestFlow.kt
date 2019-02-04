@@ -16,6 +16,7 @@ import net.corda.core.transactions.TransactionBuilder
 @StartableByRPC
 class LoanRequestFlow(val name: String,
                       val amount: Int,
+                      val panCardNo: String,
                       val bank: Party):FlowLogic<SignedTransaction>() {
 
     @Suspendable
@@ -24,7 +25,7 @@ class LoanRequestFlow(val name: String,
         val notary = serviceHub.networkMapCache.notaryIdentities.first()
 
         // Create the output state
-        val outputState = LoanState(name, amount, ourIdentity, bank, null, null, UniqueIdentifier())
+        val outputState = LoanState(name, amount, panCardNo, ourIdentity, bank, null, null, UniqueIdentifier())
 
         // Building the transaction
         val transactionBuilder = TransactionBuilder(notary).

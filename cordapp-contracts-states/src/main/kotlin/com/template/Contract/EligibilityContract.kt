@@ -17,6 +17,8 @@ class EligibilityContract : Contract {
     interface Commands: CommandData{
         class CheckEligibility: TypeOnlyCommandData(), Commands
         class EligibilityApproval: TypeOnlyCommandData(), Commands
+        class GenerateRating(val panCardNo: String, val cibilRating: Int) : TypeOnlyCommandData(), Commands
+
     }
 
     // A transaction is valid if the verify() function of the contract of all the transaction's input and output states
@@ -26,6 +28,7 @@ class EligibilityContract : Contract {
         when (command.value) {
             is Commands.CheckEligibility -> verifyCheckEligibility(tx, command)
             is Commands.EligibilityApproval -> verifyEligibilityApproval(tx, command)
+            is Commands.GenerateRating -> verifyGenerateRating(tx, command)
         }
     }
 
@@ -55,4 +58,19 @@ class EligibilityContract : Contract {
         }
     }
 
+    private fun verifyGenerateRating(tx: LedgerTransaction, command: CommandWithParties<Commands>) {
+        val myRatingCommand = tx.commands.requireSingleCommand<Commands.GenerateRating>().value
+        requireThat {
+            "Transaction should have one input" using (tx.inputs.size == 1)
+            "Transaction should have one output" using (tx.outputs.size == 1)
+
+            val inputState = tx.inputStates.get(0) as EligibilityState
+            val outputState = tx.outputStates.get(0) as EligibilityState
+            "The name in input and output should be same" using (inputState.name == outputState.name)
+            "the PanCsrdo should be same in o/p and i/p state" using (inputState.panCardNo == outputState.panCardNo)
+            "CIBIL rating should not be null" using (outputState.cibilRating != null)
+            "the fact should be correct" using (myRatingCommand.panCardNo == outputState.panCardNo && myRatingCommand.cibilRating == outputState.cibilRating)
+            "loan application should be signed by the Credit Rating Agency" using (command.signers.contains(outputState.creditRatingAgency.owningKey))
+        }
+    }
 }
