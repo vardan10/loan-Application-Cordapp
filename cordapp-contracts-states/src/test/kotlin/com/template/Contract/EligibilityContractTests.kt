@@ -15,8 +15,8 @@ class EligibilityContractTests {
     private val alice = TestIdentity(CordaX500Name("Alice", "", "GB"))
     private val bob = TestIdentity(CordaX500Name("Bob", "", "GB"))
     private val ledgerServices = MockServices(TestIdentity(CordaX500Name("TestId", "", "GB")))
-    private val eligibilityStatecheck = EligibilityState("Jack",alice.party, bob.party, null, UniqueIdentifier())
-    private val eligibilityStateapproval = EligibilityState("Jack",alice.party, bob.party, 600, UniqueIdentifier())
+    private val eligibilityStatecheck = EligibilityState("Jack",alice.party, "PANCARD", bob.party, null, UniqueIdentifier())
+    private val eligibilityStateapproval = EligibilityState("Jack",alice.party, "PANCARD", bob.party, 600, UniqueIdentifier())
 
     @Test
     fun eligibilityContractImplementsContract() {

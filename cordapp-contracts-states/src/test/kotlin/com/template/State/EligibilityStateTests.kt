@@ -13,12 +13,12 @@ class EligibilityStateTests{
 
     @Test
     fun eligibilityStateHasParamsOfCorrectTypeInConstructor() {
-        EligibilityState("Jack",alice, bob, null, UniqueIdentifier())
+        EligibilityState("Jack",alice, "PANCARD",bob, null, UniqueIdentifier())
     }
 
     @Test
     fun eligibilityStateHasGettersForIssuerOwnerAndAmount() {
-        var eligibilityState = EligibilityState("Jack",alice, bob, null, UniqueIdentifier())
+        var eligibilityState = EligibilityState("Jack",alice, "PANCARD",bob, null, UniqueIdentifier())
         assertEquals(alice, eligibilityState.bank)
         assertEquals(bob, eligibilityState.creditRatingAgency)
         assertEquals("Jack", eligibilityState.name)
@@ -26,12 +26,12 @@ class EligibilityStateTests{
 
     @Test
     fun eligibilityStateImplementsContractState() {
-        assert(EligibilityState("Jack",alice, bob, null, UniqueIdentifier()) is ContractState)
+        assert(EligibilityState("Jack",alice, "PANCARD",bob, null, UniqueIdentifier()) is ContractState)
     }
 
     @Test
     fun eligibilityStateHasTwoParticipantsTheTheBankAndCreditRatingAgency() {
-        var eligibilityState = EligibilityState("Jack",alice, bob, null, UniqueIdentifier())
+        var eligibilityState = EligibilityState("Jack",alice, "PANCARD",bob, null, UniqueIdentifier())
         assertEquals(2, eligibilityState.participants.size)
         assert(eligibilityState.participants.contains(alice))
         assert(eligibilityState.participants.contains(bob))
