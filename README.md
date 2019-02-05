@@ -5,7 +5,7 @@
 # Loan Application Cordapp - Kotlin
 
 ## Architecture
-![Solution Architecture](https://raw.githubusercontent.com/vardan10/loan-Application-Cordapp/master/Architecture%20docs/Design%20Document.png?token=ATj6HFpi6IywJA-bk00aSnhH6bljrcjyks5cUUwEwA%3D%3D)
+![Solution Architecture](https://raw.githubusercontent.com/vardan10/loan-Application-Cordapp/master/Architecture%20docs/Design%20Document.png)
 
 ## Instructions for setting up
 
@@ -22,7 +22,6 @@
 
 At this point you will have a notary node running as well as three other nodes. The nodes take about 20-30 seconds to finish booting up.There should be 4 console windows in total. (Plus 3 terminal for API)
 
-## Using the CorDapp via the console:
 ## Using the CorDapp via the console:
 1. Start the Loan Application
 In PartyA Console type:
