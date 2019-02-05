@@ -30,9 +30,9 @@ class LoanStateTests{
 
     @Test
     fun loanStateHasTwoParticipantsTheFinanceAgencyAndTheBank() {
-        var tokenState = LoanState("Jack",0, alice, bob, 1, null)
-        assertEquals(2, tokenState.participants.size)
-        assert(tokenState.participants.contains(alice))
-        assert(tokenState.participants.contains(bob))
+        var loanState = LoanState("Jack",0, alice, bob, 1, null)
+        assertEquals(2, loanState.participants.size)
+        assert(loanState.participants.contains(alice))
+        assert(loanState.participants.contains(bob))
     }
 }
