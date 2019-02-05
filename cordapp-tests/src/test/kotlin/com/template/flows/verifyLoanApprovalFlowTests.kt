@@ -102,6 +102,7 @@ class verifyLoanApprovalFlowTests {
         assertEquals(nodeB.info.legalIdentities[0], output.bank)
         assertEquals(nodeA.info.legalIdentities[0], output.financeAgency)
         assertEquals("Jhon", output.name)
+        assertEquals(300, output.cibilRating)
         assertEquals(99, output.amount)
         assertEquals(true, output.loanStatus)
     }
