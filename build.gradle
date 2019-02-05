@@ -70,6 +70,7 @@ dependencies {
     cordapp project(":cordapp")
     cordapp project(":cordapp-contracts-states")
     cordapp project(":services")
+    cordapp project(":cordapp-tests")
 
     cordaCompile "org.apache.logging.log4j:log4j-slf4j-impl:${log4j_version}"
     cordaCompile "org.apache.logging.log4j:log4j-web:${log4j_version}"

@@ -1,9 +1,11 @@
-package com.template
+package com.template.flows
 
 import com.google.common.collect.ImmutableList
 import com.template.Contract.EligibilityContract
+import com.template.LoanRequestFlow
 import com.template.State.EligibilityState
 import com.template.State.LoanState
+import com.template.verifyCheckEligibilityFlow
 import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.utilities.getOrThrow
 import net.corda.testing.node.MockNetwork
@@ -27,7 +29,7 @@ class VerifyCheckEligibilityFlowTests {
         network.runNetwork()
 
         // Run the Loan Request Flow first
-        val flow = LoanRequestFlow("Jhon",99 , "PANCARD" ,nodeB.info.legalIdentities[0])
+        val flow = LoanRequestFlow("Jhon", 99, "PANCARD", nodeB.info.legalIdentities[0])
         val loanRequestFlowFuture = nodeA.startFlow(flow)
         network.runNetwork()
         val results = loanRequestFlowFuture.getOrThrow()
@@ -43,7 +45,7 @@ class VerifyCheckEligibilityFlowTests {
     @Test
     @Throws(Exception::class)
     fun transactionConstructedByFlowUsesTheCorrectNotary() {
-        val verifyCheckEligibilityFlow = verifyCheckEligibilityFlow(loanId,nodeC.info.legalIdentities[0])
+        val verifyCheckEligibilityFlow = verifyCheckEligibilityFlow(loanId, nodeC.info.legalIdentities[0])
         val verifyCheckEligibilityFlowFuture = nodeB.startFlow(verifyCheckEligibilityFlow)
         network.runNetwork()
         val signedTransaction = verifyCheckEligibilityFlowFuture.get()
@@ -57,7 +59,7 @@ class VerifyCheckEligibilityFlowTests {
     @Test
     @Throws(Exception::class)
     fun transactionConstructedByFlowHasCorrectParameters() {
-        val verifyCheckEligibilityFlow = verifyCheckEligibilityFlow(loanId,nodeC.info.legalIdentities[0])
+        val verifyCheckEligibilityFlow = verifyCheckEligibilityFlow(loanId, nodeC.info.legalIdentities[0])
         val verifyCheckEligibilityFlowFuture = nodeB.startFlow(verifyCheckEligibilityFlow)
         network.runNetwork()
         val signedTransaction = verifyCheckEligibilityFlowFuture.get()
@@ -75,7 +77,7 @@ class VerifyCheckEligibilityFlowTests {
     @Test
     @Throws(Exception::class)
     fun transactionConstructedByFlowHasOneOutputUsingTheCorrectContract() {
-        val verifyCheckEligibilityFlow = verifyCheckEligibilityFlow(loanId,nodeC.info.legalIdentities[0])
+        val verifyCheckEligibilityFlow = verifyCheckEligibilityFlow(loanId, nodeC.info.legalIdentities[0])
         val verifyCheckEligibilityFlowFuture = nodeB.startFlow(verifyCheckEligibilityFlow)
         network.runNetwork()
         val signedTransaction = verifyCheckEligibilityFlowFuture.get()
@@ -89,7 +91,7 @@ class VerifyCheckEligibilityFlowTests {
     @Test
     @Throws(Exception::class)
     fun transactionConstructedByFlowHasOneCheckEligibilityCommand() {
-        val verifyCheckEligibilityFlow = verifyCheckEligibilityFlow(loanId,nodeC.info.legalIdentities[0])
+        val verifyCheckEligibilityFlow = verifyCheckEligibilityFlow(loanId, nodeC.info.legalIdentities[0])
         val verifyCheckEligibilityFlowFuture = nodeB.startFlow(verifyCheckEligibilityFlow)
         network.runNetwork()
         val signedTransaction = verifyCheckEligibilityFlowFuture.get()
@@ -103,7 +105,7 @@ class VerifyCheckEligibilityFlowTests {
     @Test
     @Throws(Exception::class)
     fun transactionConstructedByFlowHasOneCommandWithTheBankAsASigner() {
-        val verifyCheckEligibilityFlow = verifyCheckEligibilityFlow(loanId,nodeC.info.legalIdentities[0])
+        val verifyCheckEligibilityFlow = verifyCheckEligibilityFlow(loanId, nodeC.info.legalIdentities[0])
         val verifyCheckEligibilityFlowFuture = nodeB.startFlow(verifyCheckEligibilityFlow)
         network.runNetwork()
         val signedTransaction = verifyCheckEligibilityFlowFuture.get()
@@ -118,7 +120,7 @@ class VerifyCheckEligibilityFlowTests {
     @Test
     @Throws(Exception::class)
     fun transactionConstructedByFlowHasNoOneInputAttachmentsOrTimeWindows() {
-        val verifyCheckEligibilityFlow = verifyCheckEligibilityFlow(loanId,nodeC.info.legalIdentities[0])
+        val verifyCheckEligibilityFlow = verifyCheckEligibilityFlow(loanId, nodeC.info.legalIdentities[0])
         val verifyCheckEligibilityFlowFuture = nodeB.startFlow(verifyCheckEligibilityFlow)
         network.runNetwork()
         val signedTransaction = verifyCheckEligibilityFlowFuture.get()
