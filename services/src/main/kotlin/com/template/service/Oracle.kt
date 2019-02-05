@@ -22,15 +22,7 @@ import java.math.BigInteger
 class Oracle(val services: ServiceHub) : SingletonSerializeAsToken() {
     private val myKey = services.myInfo.legalIdentities.first().owningKey
 
-    // Generates a list of natural numbers and filters out the non-primes.
-    // The reason why prime numbers were chosen is because they are easy to reason about and reduce the mental load
-    // for this tutorial application.
-    // Clearly, most developers can generate a list of primes and all but the largest prime numbers can be verified
-    // deterministically in reasonable time. As such, it would be possible to add a constraint in the
-    // [PrimeContract.verify] function that checks the nth prime is indeed the specified number.
-    private val primes = generateSequence(1) { it + 1 }.filter { BigInteger.valueOf(it.toLong()).isProbablePrime(16) }
-
-    // Returns the Nth prime for N > 0.
+    // Returns the Credit Ratings for given pancCard
     fun query(PanCardNo: String): Int {
         require(PanCardNo.isNotEmpty()) { "n must be at least one." } // URL param is n not N.
         if (PanCardNo.equals("PRASANNAPAN")) {
@@ -42,10 +34,10 @@ class Oracle(val services: ServiceHub) : SingletonSerializeAsToken() {
             return 300
         }
     }
-    // Signs over a transaction if the specified Nth prime for a particular N is correct.
+    // Signs over a transaction if the specified Credit Rating for a particular panCardNo is correct.
     // This function takes a filtered transaction which is a partial Merkle tree. Any parts of the transaction which
-    // the oracle doesn't need to see in order to verify the correctness of the nth prime have been removed. In this
-    // case, all but the [PrimeContract.Create] commands have been removed. If the Nth prime is correct then the oracle
+    // the oracle doesn't need to see in order to verify the correctness of the credit rating have been removed. In this
+    // case, all but the [EligibilityContract.Commands.GenerateRating] commands have been removed. If the Credit rating is correct then the oracle
     // signs over the Merkle root (the hash) of the transaction.
     fun sign(ftx: FilteredTransaction): TransactionSignature {
         // Check the partial Merkle tree is valid.

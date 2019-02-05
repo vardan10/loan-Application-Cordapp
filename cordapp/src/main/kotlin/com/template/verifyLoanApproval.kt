@@ -42,14 +42,14 @@ class verifyLoanApprovalFlow(val eligibilityID: UniqueIdentifier, val loanstatus
         // Build the transaction
         // 1. Query loan state by linearId for input state
         val vaultEligibilityQueryCriteria = QueryCriteria.LinearStateQueryCriteria(listOf(ourIdentity), listOf(eligibilityID))
-        val EligibilityStateData = serviceHub.vaultService.queryBy<EligibilityState>(vaultEligibilityQueryCriteria).states.first().state.data
+        val eligibilityStateData = serviceHub.vaultService.queryBy<EligibilityState>(vaultEligibilityQueryCriteria).states.first().state.data
 
         // 1. Query loan state by linearId for input state
-        val vaultLoanQueryCriteria = QueryCriteria.LinearStateQueryCriteria(listOf(ourIdentity), listOf(EligibilityStateData.loanId))
+        val vaultLoanQueryCriteria = QueryCriteria.LinearStateQueryCriteria(listOf(ourIdentity), listOf(eligibilityStateData.loanId))
         val inputState = serviceHub.vaultService.queryBy<LoanState>(vaultLoanQueryCriteria).states.first()
 
         // Create the output state
-        val outputState = inputState.state.data.copy(loanStatus=loanstatus,cibilRating = EligibilityStateData.cibilRating)
+        val outputState = inputState.state.data.copy(loanStatus=loanstatus,cibilRating = eligibilityStateData.cibilRating)
 
         progressTracker.currentStep = BUILDING_THE_TX
         // Building the transaction

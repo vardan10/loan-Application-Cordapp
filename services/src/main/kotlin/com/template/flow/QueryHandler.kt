@@ -10,7 +10,7 @@ import net.corda.core.utilities.ProgressTracker
 import net.corda.core.utilities.unwrap
 import com.template.service.Oracle
 
-// The oracle flow to handle prime-number queries.
+// The oracle flow to handle credit rating queries.
 @InitiatedBy(QueryCreditRatingFlow::class)
 class QueryHandler(val session: FlowSession) : FlowLogic<Unit>() {
     companion object {
@@ -28,7 +28,7 @@ class QueryHandler(val session: FlowSession) : FlowLogic<Unit>() {
 
         progressTracker.currentStep = CALCULATING
         val response = try {
-            // Get the nth prime from the oracle.
+            // Get the credit rating from the oracle.
             serviceHub.cordaService(Oracle::class.java).query(request)
         } catch (e: Exception) {
             // Re-throw the exception as a FlowException so its propagated to the querying node.
