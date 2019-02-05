@@ -93,7 +93,7 @@ class TokenContractTests {
         }
     }
     @Test
-    fun tokenContractRequiresTheTransactionsOutputToHaveAPositiveAmount() {
+    fun loanContractRequiresTheTransactionsOutputToHaveAPositiveAmount() {
         val zeroTokenState = LoanState("Jack",-1, alice.party, bob.party, 1, null)
         val negativeTokenState = LoanState("Jack",0, alice.party, bob.party, 1, null)
         val positiveTokenState = LoanState("Jack",6, alice.party, bob.party, 1, null)
@@ -119,7 +119,7 @@ class TokenContractTests {
         }
     }
     @Test
-    fun tokenContractRequiresTheTransactionsCommandToBeAnLoanRequestOrLoanApprovalCommand() {
+    fun loanContractRequiresTheTransactionsCommandToBeAnLoanRequestOrLoanApprovalCommand() {
         ledgerServices.ledger {
             transaction {
                 // Has wrong command type, will fail.
