@@ -51,7 +51,6 @@ class LoanContract : Contract {
             val outputState = tx.outputStates.get(0) as LoanState
 
             "The loan amount in input and output should be same" using (inputState.amount == outputState.amount)
-            "The credit Rating in input and output should be same" using (inputState.cibilRating == outputState.cibilRating)
 
             "loan application should be signed by the Bank and Finance Agency" using (command.signers.containsAll(listOf(outputState.bank.owningKey,outputState.financeAgency.owningKey)))
         }
