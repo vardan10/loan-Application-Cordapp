@@ -16,6 +16,8 @@ import net.corda.core.utilities.ProgressTracker
 @StartableByRPC
 class verifyLoanApprovalFlow(val eligibilityID: UniqueIdentifier, val loanstatus: Boolean):FlowLogic<SignedTransaction>() {
 
+    override val progressTracker: ProgressTracker? = ProgressTracker()
+
     @Suspendable
     override fun call(): SignedTransaction {
         // Get the notary
