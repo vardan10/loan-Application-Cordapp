@@ -15,7 +15,7 @@ import com.template.service.Oracle
 class QueryHandler(val session: FlowSession) : FlowLogic<Unit>() {
     companion object {
         object RECEIVING : ProgressTracker.Step("Receiving query request.")
-        object CALCULATING : ProgressTracker.Step("Calculating Nth prime.")
+        object CALCULATING : ProgressTracker.Step("Calculating credit ratings.")
         object SENDING : ProgressTracker.Step("Sending query response.")
     }
 
