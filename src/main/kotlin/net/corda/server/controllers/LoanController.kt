@@ -3,6 +3,7 @@ package net.corda.server.controllers
 import com.template.LoanRequestFlow
 import com.template.Schema.LoanSchemaV1
 import com.template.State.LoanState
+import com.template.verifyLoanApprovalFlow
 import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.messaging.vaultQueryBy
 import net.corda.core.node.services.Vault
@@ -38,6 +39,7 @@ class LoanController(private val rpc: NodeRPCConnection) {
     @PostMapping(value = "/LoanRequest", produces = arrayOf(MediaType.TEXT_PLAIN_VALUE))
     private fun LoanRequest(@RequestParam(value = "name") name: String,
                             @RequestParam(value = "amount") amount: Int,
+                            @RequestParam(value = "panCardNo") panCardNo: String,
                             @RequestParam(value = "bank") bank: String) : ResponseEntity<String>{
 
         // 1. Get party objects for the counterparty.
@@ -50,6 +52,7 @@ class LoanController(private val rpc: NodeRPCConnection) {
                     LoanRequestFlow::class.java,
                     name,
                     amount,
+                    panCardNo,
                     bankIdentity
             )
 
@@ -73,7 +76,7 @@ class LoanController(private val rpc: NodeRPCConnection) {
         // 2. Start the LoanRequest flow. We block and wait for the flow to return.
         val (status, message) = try {
             val flowHandle = rpcOps.startFlowDynamic(
-                    LoanRequestFlow::class.java,
+                    verifyLoanApprovalFlow::class.java,
                     linearID,
                     loanStatus.toBoolean()
             )
