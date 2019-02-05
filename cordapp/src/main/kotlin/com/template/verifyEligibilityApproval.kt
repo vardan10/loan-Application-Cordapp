@@ -22,12 +22,28 @@ import java.util.function.Predicate
 class verifyEligibilityApprovalFlow(val eligibilityID: UniqueIdentifier
                                     ):FlowLogic<SignedTransaction>() {
 
-    override val progressTracker: ProgressTracker? = ProgressTracker()
+    companion object {
+        object SET_UP : ProgressTracker.Step("Initialising flow.")
+        object QUERYING_THE_ORACLE : ProgressTracker.Step("Querying oracle for Credit Rating.")
+        object BUILDING_THE_TX : ProgressTracker.Step("Building transaction.")
+        object VERIFYING_THE_TX : ProgressTracker.Step("Verifying transaction.")
+        object WE_SIGN : ProgressTracker.Step("signing transaction.")
+        object ORACLE_SIGNS : ProgressTracker.Step("Requesting oracle signature.")
+        object FINALISING : ProgressTracker.Step("Finalising transaction.") {
+            override fun childProgressTracker() = FinalityFlow.tracker()
+        }
 
+        fun tracker() = ProgressTracker(SET_UP, QUERYING_THE_ORACLE, BUILDING_THE_TX,
+                VERIFYING_THE_TX, WE_SIGN, ORACLE_SIGNS, FINALISING)
+    }
+
+    override val progressTracker = tracker()
     @Suspendable
     override fun call(): SignedTransaction {
+        progressTracker.currentStep = SET_UP
         // Get the notary
         val notary = serviceHub.networkMapCache.notaryIdentities.first()
+
 
         // Build the transaction
         // 1. Query loan state by linearId for input state
@@ -41,25 +57,31 @@ class verifyEligibilityApprovalFlow(val eligibilityID: UniqueIdentifier
         val oracleName = CordaX500Name("Oracle", "New York","US")
         val oracle = serviceHub.networkMapCache.getNodeByLegalName(oracleName)?.legalIdentities?.first()
                 ?: throw IllegalArgumentException("Requested oracle $oracleName not found on network.")
+
+        progressTracker.currentStep = QUERYING_THE_ORACLE
         val cibilRating = subFlow(QueryCreditRatingFlow(oracle,panCardNo))
 
 
         // Create the output state
         val outputState = inputState.state.data.copy(cibilRating = cibilRating)
 
+        progressTracker.currentStep = BUILDING_THE_TX
         // Building the transaction
         val transactionBuilder = TransactionBuilder(notary).
                 addInputState(inputState).
                 addOutputState(outputState, EligibilityContract.ID).
                 addCommand(EligibilityContract.Commands.GenerateRating(panCardNo, cibilRating), listOf(oracle.owningKey, ourIdentity.owningKey))
 
+        progressTracker.currentStep = VERIFYING_THE_TX
         // Verify transaction Builder
         transactionBuilder.verify(serviceHub)
 
+        progressTracker.currentStep = WE_SIGN
         //Sign initial transaction
         val ptx = serviceHub.signInitialTransaction(transactionBuilder)
 
 
+        progressTracker.currentStep = ORACLE_SIGNS
         // For privacy reasons, we only want to expose to the oracle any commands of type `Prime.Create`
         // that require its signature.
         val ftx = ptx.buildFilteredTransaction(Predicate {
@@ -73,6 +95,7 @@ class verifyEligibilityApprovalFlow(val eligibilityID: UniqueIdentifier
         val stx = ptx.withAdditionalSignature(oracleSignature)
 
 
+        progressTracker.currentStep = FINALISING
         // Notarize and commit
         return subFlow(FinalityFlow(stx))
     }
