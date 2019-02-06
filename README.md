@@ -93,7 +93,7 @@ InParty C console type:
 ```
 curl -X POST \
   http://localhost:8082/eligibility/VerifyEligibility \
-  -F eligibilityID=<ELIGIBILITY_LINEAR_ID>
+  -F eligibilityID=9e48ffce-c472-493e-aa71-67179340e078
 ```
 
 6. Approve/Reject Loan Application
@@ -101,6 +101,6 @@ InParty B console type:
 ```
 curl -X POST \
   http://localhost:8081/loan/LoanApproval \
-  -F eligibilityID=<ELIGIBILITY_LINEAR_ID> \
-  -F loanStatus=true
+  -F eligibilityID=9e48ffce-c472-493e-aa71-67179340e078 \
+  -F loanstatus=true
 ```
