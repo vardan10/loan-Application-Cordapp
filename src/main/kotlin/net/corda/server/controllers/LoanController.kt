@@ -3,6 +3,7 @@ package net.corda.server.controllers
 import com.template.LoanRequestFlow
 import com.template.Schema.LoanSchemaV1
 import com.template.State.LoanState
+import com.template.verifyLoanApprovalFlow
 import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.messaging.vaultQueryBy
 import net.corda.core.node.services.Vault
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+
 
 /**
  * Define CorDapp-specific endpoints in a controller such as this.
@@ -38,6 +40,7 @@ class LoanController(private val rpc: NodeRPCConnection) {
     @PostMapping(value = "/LoanRequest", produces = arrayOf(MediaType.TEXT_PLAIN_VALUE))
     private fun LoanRequest(@RequestParam(value = "name") name: String,
                             @RequestParam(value = "amount") amount: Int,
+                            @RequestParam(value = "panCardNo") panCardNo: String,
                             @RequestParam(value = "bank") bank: String) : ResponseEntity<String>{
 
         // 1. Get party objects for the counterparty.
@@ -50,6 +53,7 @@ class LoanController(private val rpc: NodeRPCConnection) {
                     LoanRequestFlow::class.java,
                     name,
                     amount,
+                    panCardNo,
                     bankIdentity
             )
 
@@ -65,17 +69,18 @@ class LoanController(private val rpc: NodeRPCConnection) {
 
     @PostMapping(value = "/LoanApproval", produces = arrayOf(MediaType.TEXT_PLAIN_VALUE))
     private fun LoanApproval(@RequestParam(value = "eligibilityID") eligibilityID: String,
-                            @RequestParam(value = "loanstatus") loanStatus: String) : ResponseEntity<String>{
+                            @RequestParam(value = "loanstatus") loanstatus: String) : ResponseEntity<String>{
 
         // 1. Get linearId from string
         val linearID = UniqueIdentifier.fromString(eligibilityID)
+        val loanStatus = if (loanstatus.equals("true")) true else false
 
-        // 2. Start the LoanRequest flow. We block and wait for the flow to return.
+        // 2. Start the LoanApproval flow. We block and wait for the flow to return.
         val (status, message) = try {
             val flowHandle = rpcOps.startFlowDynamic(
-                    LoanRequestFlow::class.java,
+                    verifyLoanApprovalFlow::class.java,
                     linearID,
-                    loanStatus.toBoolean()
+                    loanStatus
             )
 
             val result = flowHandle.use { it.returnValue.getOrThrow() }

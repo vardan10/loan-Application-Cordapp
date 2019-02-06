@@ -5,7 +5,7 @@
 # Loan Application Cordapp - Kotlin
 
 ## Architecture
-![Solution Architecture](https://raw.githubusercontent.com/vardan10/loan-Application-Cordapp/master/Architecture%20docs/Design%20Document.png?token=ATj6HFpi6IywJA-bk00aSnhH6bljrcjyks5cUUwEwA%3D%3D)
+![Solution Architecture](https://raw.githubusercontent.com/vardan10/loan-Application-Cordapp/master/Architecture%20docs/Design%20Document.png)
 
 ## Instructions for setting up
 
@@ -22,7 +22,6 @@
 
 At this point you will have a notary node running as well as three other nodes. The nodes take about 20-30 seconds to finish booting up.There should be 4 console windows in total. (Plus 3 terminal for API)
 
-## Using the CorDapp via the console:
 ## Using the CorDapp via the console:
 1. Start the Loan Application
 In PartyA Console type:
@@ -65,7 +64,7 @@ start verifyLoanApprovalFlow eligibilityID: "<Eligibility_LINEAR_ID>", loanstatu
 ```
 curl -X POST \
   http://localhost:8080/loan/LoanRequest \
-  -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
+  -F panCardNo=PRASANNAPAN \
   -F name=Vardan \
   -F amount=40000 \
   -F bank=PartyB
@@ -80,14 +79,13 @@ curl -X GET http://localhost:8080/loan/GetLoans
 ```
 curl -X POST \
   http://localhost:8081/eligibility/CheckEligibility \
-  -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
   -F loanID=<LOAN_LINEAR_ID> \
   -F creditRatingAgency=PartyC
 ```
 
 4. Get Linear Id of Loan Eligibility
 ```
-curl -X GET http://localhost:8080/eligibility/GetEligibilities
+curl -X GET http://localhost:8081/eligibility/GetEligibilities
 ```
 
 5. Create a CIBIL Rating
@@ -95,9 +93,7 @@ InParty C console type:
 ```
 curl -X POST \
   http://localhost:8082/eligibility/VerifyEligibility \
-  -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
-  -F eligibilityID=<ELIGIBILITY_LINEAR_ID> \
-  -F cibilRating=800
+  -F eligibilityID=<ELIGIBILITY_LINEAR_ID>
 ```
 
 6. Approve/Reject Loan Application
@@ -105,7 +101,6 @@ InParty B console type:
 ```
 curl -X POST \
   http://localhost:8081/loan/LoanApproval \
-  -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
   -F eligibilityID=<ELIGIBILITY_LINEAR_ID> \
   -F loanStatus=true
 ```

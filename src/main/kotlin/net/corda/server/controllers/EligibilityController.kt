@@ -57,8 +57,7 @@ class EligibilityController(private val rpc: NodeRPCConnection) {
     }
 
     @PostMapping(value = "/VerifyEligibility", produces = arrayOf(MediaType.TEXT_PLAIN_VALUE))
-    private fun verifyEligibility(@RequestParam(value = "eligibilityID") eligibilityID: String,
-                                  @RequestParam(value = "cibilRating") cibilRating: Int): ResponseEntity<String> {
+    private fun verifyEligibility(@RequestParam(value = "eligibilityID") eligibilityID: String): ResponseEntity<String> {
 
         // 1. Get party objects for the counterparty.
         val linearID = UniqueIdentifier.fromString(eligibilityID)
@@ -67,8 +66,7 @@ class EligibilityController(private val rpc: NodeRPCConnection) {
         val (status, message) = try {
             val flowHandle = rpcOps.startFlowDynamic(
                     verifyEligibilityApprovalFlow::class.java,
-                    linearID,
-                    cibilRating
+                    linearID
             )
 
             val result = flowHandle.use { it.returnValue.getOrThrow() }
