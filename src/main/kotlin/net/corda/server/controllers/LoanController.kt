@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
+
 /**
  * Define CorDapp-specific endpoints in a controller such as this.
  */
@@ -68,17 +69,18 @@ class LoanController(private val rpc: NodeRPCConnection) {
 
     @PostMapping(value = "/LoanApproval", produces = arrayOf(MediaType.TEXT_PLAIN_VALUE))
     private fun LoanApproval(@RequestParam(value = "eligibilityID") eligibilityID: String,
-                            @RequestParam(value = "loanstatus") loanStatus: String) : ResponseEntity<String>{
+                            @RequestParam(value = "loanstatus") loanstatus: String) : ResponseEntity<String>{
 
         // 1. Get linearId from string
         val linearID = UniqueIdentifier.fromString(eligibilityID)
+        val loanStatus = if (loanstatus.equals("true")) true else false
 
-        // 2. Start the LoanRequest flow. We block and wait for the flow to return.
+        // 2. Start the LoanApproval flow. We block and wait for the flow to return.
         val (status, message) = try {
             val flowHandle = rpcOps.startFlowDynamic(
                     verifyLoanApprovalFlow::class.java,
                     linearID,
-                    loanStatus.toBoolean()
+                    loanStatus
             )
 
             val result = flowHandle.use { it.returnValue.getOrThrow() }
