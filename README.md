@@ -50,13 +50,13 @@ run vaultQuery contractStateType: com.template.State.EligibilityState
 5. Create a CIBIL Rating
 InParty C console type:
 ```
-start verifyEligibilityApprovalFlow eligibilityID: "<Eligibility_LINEAR_ID>"
+start verifyEligibilityApprovalFlow eligibilityID: "<ELIGIBILITY_LINEAR_ID>"
 ```
 
 6. Approve/Reject Loan Application
 InParty B console type:
 ```
-start verifyLoanApprovalFlow eligibilityID: "<Eligibility_LINEAR_ID>", loanstatus: true
+start verifyLoanApprovalFlow eligibilityID: "<ELIGIBILITY_LINEAR_ID>", loanstatus: true
 ```
 
 ## Using the CorDapp via the Spring Boot APIs:
@@ -93,7 +93,7 @@ InParty C console type:
 ```
 curl -X POST \
   http://localhost:8082/eligibility/VerifyEligibility \
-  -F eligibilityID=9e48ffce-c472-493e-aa71-67179340e078
+  -F eligibilityID=<ELIGIBILITY_LINEAR_ID>
 ```
 
 6. Approve/Reject Loan Application
@@ -101,6 +101,6 @@ InParty B console type:
 ```
 curl -X POST \
   http://localhost:8081/loan/LoanApproval \
-  -F eligibilityID=9e48ffce-c472-493e-aa71-67179340e078 \
+  -F eligibilityID=<ELIGIBILITY_LINEAR_ID> \
   -F loanstatus=true
 ```
