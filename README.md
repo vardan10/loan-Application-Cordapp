@@ -64,7 +64,7 @@ start verifyLoanApprovalFlow eligibilityID: "<Eligibility_LINEAR_ID>", loanstatu
 ```
 curl -X POST \
   http://localhost:8080/loan/LoanRequest \
-  -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
+  -F panCardNo=PRASANNAPAN \
   -F name=Vardan \
   -F amount=40000 \
   -F bank=PartyB
@@ -79,14 +79,13 @@ curl -X GET http://localhost:8080/loan/GetLoans
 ```
 curl -X POST \
   http://localhost:8081/eligibility/CheckEligibility \
-  -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
   -F loanID=<LOAN_LINEAR_ID> \
   -F creditRatingAgency=PartyC
 ```
 
 4. Get Linear Id of Loan Eligibility
 ```
-curl -X GET http://localhost:8080/eligibility/GetEligibilities
+curl -X GET http://localhost:8081/eligibility/GetEligibilities
 ```
 
 5. Create a CIBIL Rating
@@ -94,9 +93,7 @@ InParty C console type:
 ```
 curl -X POST \
   http://localhost:8082/eligibility/VerifyEligibility \
-  -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
-  -F eligibilityID=<ELIGIBILITY_LINEAR_ID> \
-  -F cibilRating=800
+  -F eligibilityID=<ELIGIBILITY_LINEAR_ID>
 ```
 
 6. Approve/Reject Loan Application
@@ -104,7 +101,6 @@ InParty B console type:
 ```
 curl -X POST \
   http://localhost:8081/loan/LoanApproval \
-  -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
   -F eligibilityID=<ELIGIBILITY_LINEAR_ID> \
   -F loanStatus=true
 ```
