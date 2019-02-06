@@ -2,14 +2,11 @@ package com.template.flows
 
 import com.google.common.collect.ImmutableList
 import com.template.Contract.LoanContract
-import com.template.LoanRequestFlow
 import com.template.State.EligibilityState
 import com.template.State.LoanState
 import com.template.flow.QueryHandler
 import com.template.flow.SignHandler
-import com.template.verifyCheckEligibilityFlow
-import com.template.verifyEligibilityApprovalFlow
-import com.template.verifyLoanApprovalFlow
+import com.template.*
 import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.identity.CordaX500Name
 import net.corda.core.utilities.getOrThrow
@@ -32,7 +29,7 @@ class verifyLoanApprovalFlowTests {
 
     @Before
     fun setup() {
-        network = MockNetwork(ImmutableList.of("com.template"))
+        network = MockNetwork(ImmutableList.of("com.template","com.template.service"))
         nodeA = network.createPartyNode(null)
         nodeB = network.createPartyNode(null)
         nodeC = network.createPartyNode(null)
@@ -162,4 +159,15 @@ class verifyLoanApprovalFlowTests {
         assertEquals(1, signedTransaction.tx.attachments.size.toLong())
         assertEquals(null, signedTransaction.tx.timeWindow)
     }
+
+//    @Test
+//    @Throws(Exception::class)
+//    fun `oracle returns correct credit rating`() {
+//        val flow = nodeB.startFlow(QueryCreditRatingFlow(oracleNode.info.legalIdentities[0],"FLFPK1672D"))
+//        network.runNetwork()
+//        val result = flow.get()
+//        //val result = signedTransaction.
+//        //val result = flow.getOrThrow().tx.outputsOfType<EligibilityState>().single()
+//        assertEquals(600, result)
+//    }
 }
