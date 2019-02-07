@@ -26,7 +26,7 @@ At this point you will have a notary node running as well as three other nodes. 
 1. Start the Loan Application
 In PartyA Console type:
 ```
-start LoanRequestFlow name: "Prasanna", amount: 30000, panCardNo: "PRASANNAPAN", bank: "PartyB"
+start LoanRequestFlow name: "Prasanna", amount: 30000, panCardNo: "FLFPK1672D", bank: "PartyB"
 ```
 
 2. Get Linear Id of Loan Application
@@ -64,7 +64,7 @@ start verifyLoanApprovalFlow eligibilityID: "<ELIGIBILITY_LINEAR_ID>", loanstatu
 ```
 curl -X POST \
   http://localhost:8080/loan/LoanRequest \
-  -F panCardNo=PRASANNAPAN \
+  -F panCardNo=FLFPK1672D \
   -F name=Vardan \
   -F amount=40000 \
   -F bank=PartyB
