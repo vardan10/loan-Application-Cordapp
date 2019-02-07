@@ -24,10 +24,12 @@ class Oracle(val services: ServiceHub) : SingletonSerializeAsToken() {
 
     // Returns the Credit Ratings for given pancCard
     fun query(PanCardNo: String): Int {
-        require(PanCardNo.isNotEmpty()) { "n must be at least one." } // URL param is n not N.
-        if (PanCardNo.equals("PRASANNAPAN")) {
+        require(PanCardNo.isNotEmpty() && PanCardNo.length == 10) { "PancardNo should be of length 10" } // URL param is n not N.
+        val cond = Regex("^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?\$")
+        require( PanCardNo.matches(cond))
+        if (PanCardNo.equals("FLFPK1672D")) {
             return 600
-        } else if(PanCardNo.equals("VARDHANPAN")) {
+        } else if(PanCardNo.equals("ABCDE1234F")) {
             return 500
         }
         else{
