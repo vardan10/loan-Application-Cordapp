@@ -29,7 +29,7 @@ class VerifyCheckEligibilityFlowTests {
         network.runNetwork()
 
         // Run the Loan Request Flow first
-        val flow = LoanRequestFlow("Jhon", 99, "PANCARD", nodeB.info.legalIdentities[0])
+        val flow = LoanRequestFlow("Jhon", 99, "FLFPK1672D", nodeB.info.legalIdentities[0])
         val loanRequestFlowFuture = nodeA.startFlow(flow)
         network.runNetwork()
         val results = loanRequestFlowFuture.getOrThrow()

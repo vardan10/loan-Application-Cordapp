@@ -41,7 +41,7 @@ class verifyLoanApprovalFlowTests {
         network.runNetwork()
 
         // Run the Loan Request Flow first
-        val flow = LoanRequestFlow("Jhon", 99, "PANCARD", nodeB.info.legalIdentities[0])
+        val flow = LoanRequestFlow("Jhon", 99, "FLFPK1672D", nodeB.info.legalIdentities[0])
         val loanRequestFlowFuture = nodeA.startFlow(flow)
         network.runNetwork()
         val results = loanRequestFlowFuture.getOrThrow()
@@ -63,7 +63,7 @@ class verifyLoanApprovalFlowTests {
         val newEligibilityStateAfterApproval = eligibilityApprovalSignedTransaction.tx.outputsOfType(EligibilityState::class.java)[0]
         eligibilityId = newEligibilityStateAfterApproval.linearId
 
-        assertEquals(300, newEligibilityStateAfterApproval.cibilRating)
+        assertEquals(600, newEligibilityStateAfterApproval.cibilRating)
     }
 
     @After
@@ -99,7 +99,7 @@ class verifyLoanApprovalFlowTests {
         assertEquals(nodeB.info.legalIdentities[0], output.bank)
         assertEquals(nodeA.info.legalIdentities[0], output.financeAgency)
         assertEquals("Jhon", output.name)
-        assertEquals(300, output.cibilRating)
+        assertEquals(600, output.cibilRating)
         assertEquals(99, output.amount)
         assertEquals(true, output.loanStatus)
     }
