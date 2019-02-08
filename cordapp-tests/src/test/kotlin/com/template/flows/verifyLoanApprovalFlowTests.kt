@@ -9,6 +9,7 @@ import com.template.flow.SignHandler
 import com.template.*
 import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.identity.CordaX500Name
+import net.corda.core.transactions.SignedTransaction
 import net.corda.core.utilities.getOrThrow
 import net.corda.testing.node.MockNetwork
 import net.corda.testing.node.StartedMockNode
@@ -160,14 +161,14 @@ class verifyLoanApprovalFlowTests {
         assertEquals(null, signedTransaction.tx.timeWindow)
     }
 
-//    @Test
-//    @Throws(Exception::class)
-//    fun `oracle returns correct credit rating`() {
-//        val flow = nodeB.startFlow(QueryCreditRatingFlow(oracleNode.info.legalIdentities[0],"FLFPK1672D"))
-//        network.runNetwork()
-//        val result = flow.get()
-//        //val result = signedTransaction.
-//        //val result = flow.getOrThrow().tx.outputsOfType<EligibilityState>().single()
-//        assertEquals(600, result)
-//    }
+    @Test
+    @Throws(Exception::class)
+    fun `oracle returns correct credit rating`() {
+        val flow = nodeB.startFlow(QueryCreditRatingFlow(oracleNode.info.legalIdentities[0],"FLFPK1672D"))
+        network.runNetwork()
+        val result = flow.get()
+//        val result = signedTransaction.
+//        val result = flow.getOrThrow().tx.outputsOfType<EligibilityState>().single()
+        assertEquals(600, result)
+    }
 }
