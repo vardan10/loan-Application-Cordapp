@@ -104,3 +104,9 @@ curl -X POST \
   -F eligibilityID=<ELIGIBILITY_LINEAR_ID> \
   -F loanstatus=true
 ```
+
+7. Get Approved Loans
+InParty A console type:
+```
+curl -X GET http://localhost:8080/loan/GetApprovedLoans
+```
