@@ -5,10 +5,8 @@ import com.template.Contract.EligibilityContract
 import com.template.State.EligibilityState
 import net.corda.core.contracts.Command
 import net.corda.core.contracts.UniqueIdentifier
-import net.corda.core.flows.FinalityFlow
-import net.corda.core.flows.FlowLogic
-import net.corda.core.flows.InitiatingFlow
-import net.corda.core.flows.StartableByRPC
+import net.corda.core.contracts.requireThat
+import net.corda.core.flows.*
 import net.corda.core.identity.CordaX500Name
 import net.corda.core.node.services.queryBy
 import net.corda.core.node.services.vault.QueryCriteria
@@ -29,12 +27,13 @@ class verifyEligibilityApprovalFlow(val eligibilityID: UniqueIdentifier
         object VERIFYING_THE_TX : ProgressTracker.Step("Verifying transaction.")
         object WE_SIGN : ProgressTracker.Step("signing transaction.")
         object ORACLE_SIGNS : ProgressTracker.Step("Requesting oracle signature.")
+        object OTHER_PARTY_SIGNS : ProgressTracker.Step("Requesting Other party signature.")
         object FINALISING : ProgressTracker.Step("Finalising transaction.") {
             override fun childProgressTracker() = FinalityFlow.tracker()
         }
 
         fun tracker() = ProgressTracker(SET_UP, QUERYING_THE_ORACLE, BUILDING_THE_TX,
-                VERIFYING_THE_TX, WE_SIGN, ORACLE_SIGNS, FINALISING)
+                VERIFYING_THE_TX, WE_SIGN, ORACLE_SIGNS, OTHER_PARTY_SIGNS, FINALISING)
     }
 
     override val progressTracker = tracker()
@@ -70,7 +69,7 @@ class verifyEligibilityApprovalFlow(val eligibilityID: UniqueIdentifier
         val transactionBuilder = TransactionBuilder(notary).
                 addInputState(inputState).
                 addOutputState(outputState, EligibilityContract.ID).
-                addCommand(EligibilityContract.Commands.GenerateRating(panCardNo, cibilRating), listOf(oracle.owningKey, ourIdentity.owningKey))
+                addCommand(EligibilityContract.Commands.GenerateRating(panCardNo, cibilRating), listOf(oracle.owningKey, ourIdentity.owningKey, outputState.bank.owningKey))
 
         progressTracker.currentStep = VERIFYING_THE_TX
         // Verify transaction Builder
@@ -94,9 +93,32 @@ class verifyEligibilityApprovalFlow(val eligibilityID: UniqueIdentifier
         val oracleSignature = subFlow(SignCreditRatingFlow(oracle, ftx))
         val stx = ptx.withAdditionalSignature(oracleSignature)
 
+        progressTracker.currentStep = OTHER_PARTY_SIGNS
+        // Send transaction to the other node for signing
+        val otherPartySession = initiateFlow(outputState.bank)
+        val completelySignedTransaction = subFlow(CollectSignaturesFlow(stx, listOf(otherPartySession)))
+
 
         progressTracker.currentStep = FINALISING
         // Notarize and commit
-        return subFlow(FinalityFlow(stx))
+        return subFlow(FinalityFlow(completelySignedTransaction))
     }
+}
+
+@InitiatedBy(verifyEligibilityApprovalFlow::class)
+class verifyEligibilityApprovalResponderFlow(val otherpartySession: FlowSession) : FlowLogic<SignedTransaction>() {
+
+    @Suspendable
+    override fun call(): SignedTransaction {
+        val flow = object : SignTransactionFlow(otherpartySession){
+            override fun checkTransaction(stx: SignedTransaction) = requireThat {
+                val output = stx.tx.outputs.single().data
+                "This must be an EligibilityState." using (output is EligibilityState)
+                val eligibilityStateoutput = output as EligibilityState
+                "CibilRating should not null" using (eligibilityStateoutput.cibilRating != null)
+            }
+        }
+        return subFlow(flow)
+    }
+
 }

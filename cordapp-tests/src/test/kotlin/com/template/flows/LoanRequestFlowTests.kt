@@ -90,7 +90,7 @@ class LoanRequestFlowTests {
 
     @Test
     @Throws(Exception::class)
-    fun transactionConstructedByFlowHasOneCommandWithTheFinancyAgencyAsASigner() {
+    fun transactionConstructedByFlowHasOneCommandWithTheFinancyAgencyAndBankAsASigners() {
         val flow = LoanRequestFlow("Jhon", 99, "FLFPK1672D", nodeB.info.legalIdentities[0])
         val future = nodeA.startFlow(flow)
         network.runNetwork()
@@ -99,8 +99,8 @@ class LoanRequestFlowTests {
         assertEquals(1, signedTransaction.tx.commands.size.toLong())
         val (_, signers) = signedTransaction.tx.commands[0]
 
-        assertEquals(1, signers.size.toLong())
-        assert(signers.contains(nodeA.info.legalIdentities[0].owningKey))
+        assertEquals(2, signers.size.toLong())
+        assert(signers.containsAll(listOf(nodeA.info.legalIdentities[0].owningKey,nodeB.info.legalIdentities[0].owningKey)))
     }
 
     @Test

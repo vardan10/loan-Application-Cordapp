@@ -29,13 +29,13 @@ class EligibilityContractTests {
                 // Has an input, will fail.
                 input(EligibilityContract.ID, eligibilityStatecheck)
                 output(EligibilityContract.ID, eligibilityStatecheck)
-                command(alice.publicKey, EligibilityContract.Commands.CheckEligibility())
+                command(listOf(alice.publicKey,bob.publicKey), EligibilityContract.Commands.CheckEligibility())
                 fails()
             }
             transaction{
                 // Has no input, will verify.
                 output(EligibilityContract.ID, eligibilityStatecheck)
-                command(alice.publicKey, EligibilityContract.Commands.CheckEligibility())
+                command(listOf(alice.publicKey,bob.publicKey), EligibilityContract.Commands.CheckEligibility())
                 verifies()
             }
         }
@@ -65,13 +65,13 @@ class EligibilityContractTests {
                 // Has two outputs, will fail.
                 output(EligibilityContract.ID, eligibilityStatecheck)
                 output(EligibilityContract.ID, eligibilityStatecheck)
-                command(alice.publicKey, EligibilityContract.Commands.CheckEligibility())
+                command(listOf(alice.publicKey,bob.publicKey), EligibilityContract.Commands.CheckEligibility())
                 fails()
             }
             transaction {
                 // Has one output, will verify.
                 output(EligibilityContract.ID, eligibilityStatecheck)
-                command(alice.publicKey, EligibilityContract.Commands.CheckEligibility())
+                command(listOf(alice.publicKey,bob.publicKey), EligibilityContract.Commands.CheckEligibility())
                 verifies()
             }
             transaction {
@@ -97,7 +97,7 @@ class EligibilityContractTests {
             transaction {
                 output(EligibilityContract.ID, eligibilityStateapproval)
                 // Has two commands, will fail.
-                command(alice.publicKey, EligibilityContract.Commands.CheckEligibility())
+                command(listOf(alice.publicKey,bob.publicKey), EligibilityContract.Commands.CheckEligibility())
                 command(listOf(alice.publicKey,bob.publicKey), EligibilityContract.Commands.EligibilityApproval())
                 fails()
             }
@@ -111,7 +111,7 @@ class EligibilityContractTests {
             transaction {
                 output(EligibilityContract.ID, eligibilityStatecheck)
                 // Has one command, will verify.
-                command(alice.publicKey, EligibilityContract.Commands.CheckEligibility())
+                command(listOf(alice.publicKey,bob.publicKey), EligibilityContract.Commands.CheckEligibility())
                 verifies()
             }
         }
@@ -122,13 +122,13 @@ class EligibilityContractTests {
             transaction {
                 // Has wrong output type, will fail.
                 output(EligibilityContract.ID, DummyState())
-                command(alice.publicKey, EligibilityContract.Commands.CheckEligibility())
+                command(listOf(alice.publicKey,bob.publicKey), EligibilityContract.Commands.CheckEligibility())
                 fails()
             }
             transaction {
                 // Has correct output type, will verify.
                 output(EligibilityContract.ID, eligibilityStatecheck)
-                command(alice.publicKey, EligibilityContract.Commands.CheckEligibility())
+                command(listOf(alice.publicKey,bob.publicKey), EligibilityContract.Commands.CheckEligibility())
                 verifies()
             }
         }
@@ -139,13 +139,13 @@ class EligibilityContractTests {
             transaction {
                 // Has wrong command type, will fail.
                 output(EligibilityContract.ID, eligibilityStatecheck)
-                command(alice.publicKey, DummyCommandData)
+                command(listOf(alice.publicKey,bob.publicKey), DummyCommandData)
                 fails()
             }
             transaction {
                 // Has correct command type, will verify.
                 output(EligibilityContract.ID, eligibilityStatecheck)
-                command(alice.publicKey, EligibilityContract.Commands.CheckEligibility())
+                command(listOf(alice.publicKey,bob.publicKey), EligibilityContract.Commands.CheckEligibility())
                 verifies()
 
             }

@@ -4,7 +4,9 @@ import co.paralleluniverse.fibers.Suspendable
 import com.template.Contract.LoanContract
 import com.template.State.EligibilityState
 import com.template.State.LoanState
+import net.corda.core.contracts.Requirements.using
 import net.corda.core.contracts.UniqueIdentifier
+import net.corda.core.contracts.requireThat
 import net.corda.core.flows.*
 import net.corda.core.node.services.queryBy
 import net.corda.core.node.services.vault.QueryCriteria
@@ -78,14 +80,18 @@ class verifyLoanApprovalFlow(val eligibilityID: UniqueIdentifier, val loanstatus
 }
 
 @InitiatedBy(verifyLoanApprovalFlow::class)
-class InvoiceSettlementResponderFlow(val otherpartySession: FlowSession): FlowLogic<Unit>(){
+class InvoiceSettlementResponderFlow(val otherpartySession: FlowSession): FlowLogic<SignedTransaction>(){
     @Suspendable
-    override fun call() {
+    override fun call(): SignedTransaction {
         val flow = object : SignTransactionFlow(otherpartySession){
-            override fun checkTransaction(stx: SignedTransaction) {
-                // Any sanity checks on this transaction
+            override fun checkTransaction(stx: SignedTransaction) = requireThat {
+                val output = stx.tx.outputs.single().data
+                "This must be an LoanState." using (output is LoanState)
+                val loanStateoutput = output as LoanState
+                "CibilRating should not be null" using (loanStateoutput.cibilRating != null)
+                "Loan Status should not be null" using (loanStateoutput.loanStatus != null)
             }
         }
-        subFlow(flow)
+        return subFlow(flow)
     }
 }

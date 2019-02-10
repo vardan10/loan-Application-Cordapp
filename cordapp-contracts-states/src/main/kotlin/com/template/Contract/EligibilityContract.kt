@@ -40,7 +40,7 @@ class EligibilityContract : Contract {
             val outputState = tx.outputStates.get(0) as EligibilityState
 
             "CIBIL rating should be null" using (outputState.cibilRating == null)
-            "loan application should be signed by the Bank" using (command.signers.contains(outputState.bank.owningKey))
+            "loan application should be signed by the Bank and Credit rating agency" using (command.signers.containsAll(listOf(outputState.bank.owningKey,outputState.creditRatingAgency.owningKey)))
         }
     }
 
@@ -54,7 +54,7 @@ class EligibilityContract : Contract {
 
             "The name in input and output should be same" using (inputState.name == outputState.name)
             "CIBIL rating should not be null" using (outputState.cibilRating != null)
-            "loan application should be signed by the Credit Rating Agency" using (command.signers.contains(outputState.creditRatingAgency.owningKey))
+            "loan application should be signed by the Bank and Credit rating agency" using (command.signers.containsAll(listOf(outputState.bank.owningKey,outputState.creditRatingAgency.owningKey)))
         }
     }
 
@@ -70,7 +70,7 @@ class EligibilityContract : Contract {
             "the PanCsrdo should be same in o/p and i/p state" using (inputState.panCardNo == outputState.panCardNo)
             "CIBIL rating should not be null" using (outputState.cibilRating != null)
             "the fact should be correct" using (myRatingCommand.panCardNo == outputState.panCardNo && myRatingCommand.cibilRating == outputState.cibilRating)
-            "loan application should be signed by the Credit Rating Agency" using (command.signers.contains(outputState.creditRatingAgency.owningKey))
+            "loan application should be signed by the Bank and Credit rating agency" using (command.signers.containsAll(listOf(outputState.bank.owningKey,outputState.creditRatingAgency.owningKey)))
         }
     }
 }

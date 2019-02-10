@@ -14,7 +14,8 @@ class TokenContractTests {
     private val alice = TestIdentity(CordaX500Name("Alice", "", "GB"))
     private val bob = TestIdentity(CordaX500Name("Bob", "", "GB"))
     private val ledgerServices = MockServices(TestIdentity(CordaX500Name("TestId", "", "GB")))
-    private val loanState = LoanState("Jack",5, "PANCARD", alice.party, bob.party, 1, null)
+    private val loanStateforLoanRequest = LoanState("Jack",5, "PANCARD", alice.party, bob.party, null, null)
+    private val loanStateforLoanApproval = LoanState("Jack",5, "PANCARD", alice.party, bob.party, 400, null)
 
     @Test
     fun loanContractImplementsContract() {
@@ -25,15 +26,15 @@ class TokenContractTests {
         ledgerServices.ledger {
             transaction {
                 // Has an input, will fail.
-                input(LoanContract.ID, loanState)
-                output(LoanContract.ID, loanState)
-                command(alice.publicKey, LoanContract.Commands.LoanRequest())
+                input(LoanContract.ID, loanStateforLoanRequest)
+                output(LoanContract.ID, loanStateforLoanRequest)
+                command(listOf(alice.publicKey,bob.publicKey), LoanContract.Commands.LoanRequest())
                 fails()
             }
             transaction{
                 // Has no input, will verify.
-                output(LoanContract.ID, loanState)
-                command(alice.publicKey, LoanContract.Commands.LoanRequest())
+                output(LoanContract.ID, loanStateforLoanRequest)
+                command(listOf(alice.publicKey,bob.publicKey), LoanContract.Commands.LoanRequest())
                 verifies()
             }
         }
@@ -43,15 +44,15 @@ class TokenContractTests {
         ledgerServices.ledger {
             transaction {
                 // Has two outputs, will fail.
-                output(LoanContract.ID, loanState)
-                output(LoanContract.ID, loanState)
-                command(alice.publicKey, LoanContract.Commands.LoanRequest())
+                output(LoanContract.ID, loanStateforLoanRequest)
+                output(LoanContract.ID, loanStateforLoanRequest)
+                command(listOf(alice.publicKey,bob.publicKey), LoanContract.Commands.LoanRequest())
                 fails()
             }
             transaction {
                 // Has one output, will verify.
-                output(LoanContract.ID, loanState)
-                command(alice.publicKey, LoanContract.Commands.LoanRequest())
+                output(LoanContract.ID, loanStateforLoanRequest)
+                command(listOf(alice.publicKey,bob.publicKey), LoanContract.Commands.LoanRequest())
                 verifies()
             }
         }
@@ -61,16 +62,16 @@ class TokenContractTests {
 
         ledgerServices.ledger {
             transaction {
-                output(LoanContract.ID, loanState)
+                output(LoanContract.ID, loanStateforLoanRequest)
                 // Has two commands, will fail.
-                command(alice.publicKey, LoanContract.Commands.LoanRequest())
-                command(alice.publicKey, LoanContract.Commands.LoanRequest())
+                command(listOf(alice.publicKey,bob.publicKey), LoanContract.Commands.LoanRequest())
+                command(listOf(alice.publicKey,bob.publicKey), LoanContract.Commands.LoanRequest())
                 fails()
             }
             transaction {
-                output(LoanContract.ID, loanState)
+                output(LoanContract.ID, loanStateforLoanRequest)
                 // Has one command, will verify.
-                command(alice.publicKey, LoanContract.Commands.LoanRequest())
+                command(listOf(alice.publicKey,bob.publicKey), LoanContract.Commands.LoanRequest())
                 verifies()
             }
         }
@@ -81,40 +82,40 @@ class TokenContractTests {
             transaction {
                 // Has wrong output type, will fail.
                 output(LoanContract.ID, DummyState())
-                command(alice.publicKey, LoanContract.Commands.LoanRequest())
+                command(listOf(alice.publicKey,bob.publicKey), LoanContract.Commands.LoanRequest())
                 fails()
             }
             transaction {
                 // Has correct output type, will verify.
-                output(LoanContract.ID, loanState)
-                command(alice.publicKey, LoanContract.Commands.LoanRequest())
+                output(LoanContract.ID, loanStateforLoanRequest)
+                command(listOf(alice.publicKey,bob.publicKey), LoanContract.Commands.LoanRequest())
                 verifies()
             }
         }
     }
     @Test
     fun loanContractRequiresTheTransactionsOutputToHaveAPositiveAmount() {
-        val zeroTokenState = LoanState("Jack",-1, "PANCARD", alice.party, bob.party, 1, null)
-        val negativeTokenState = LoanState("Jack",0, "PANCARD", alice.party, bob.party, 1, null)
-        val positiveTokenState = LoanState("Jack",6, "PANCARD", alice.party, bob.party, 1, null)
+        val zeroTokenState = LoanState("Jack",-1, "PANCARD", alice.party, bob.party, null, null)
+        val negativeTokenState = LoanState("Jack",0, "PANCARD", alice.party, bob.party, null, null)
+        val positiveTokenState = LoanState("Jack",6, "PANCARD", alice.party, bob.party, null, null)
 
         ledgerServices.ledger {
             transaction {
                 // Has zero-amount TokenState, will fail.
                 output(LoanContract.ID, zeroTokenState)
-                command(alice.publicKey, LoanContract.Commands.LoanRequest())
+                command(listOf(alice.publicKey,bob.publicKey), LoanContract.Commands.LoanRequest())
                 fails()
             }
             transaction {
                 // Has negative-amount TokenState, will fail.
                 output(LoanContract.ID, negativeTokenState)
-                command(alice.publicKey, LoanContract.Commands.LoanRequest())
+                command(listOf(alice.publicKey,bob.publicKey), LoanContract.Commands.LoanRequest())
                 fails()
             }
             transaction {
                 // Also has positive-amount TokenState, will verify.
                 output(LoanContract.ID, positiveTokenState)
-                command(alice.publicKey, LoanContract.Commands.LoanRequest())
+                command(listOf(alice.publicKey,bob.publicKey), LoanContract.Commands.LoanRequest())
                 verifies()
             }
         }
@@ -124,21 +125,21 @@ class TokenContractTests {
         ledgerServices.ledger {
             transaction {
                 // Has wrong command type, will fail.
-                output(LoanContract.ID, loanState)
-                command(alice.publicKey, DummyCommandData)
+                output(LoanContract.ID, loanStateforLoanRequest)
+                command(listOf(alice.publicKey,bob.publicKey), DummyCommandData)
                 fails()
             }
             transaction {
                 // Has correct command type, will verify.
-                output(LoanContract.ID, loanState)
-                command(alice.publicKey, LoanContract.Commands.LoanRequest())
+                output(LoanContract.ID, loanStateforLoanRequest)
+                command(listOf(alice.publicKey,bob.publicKey), LoanContract.Commands.LoanRequest())
                 verifies()
 
             }
             transaction {
                 // Has correct command type, will verify.
-                input(LoanContract.ID, loanState)
-                output(LoanContract.ID, loanState)
+                input(LoanContract.ID, loanStateforLoanApproval)
+                output(LoanContract.ID, loanStateforLoanApproval)
                 command(listOf(alice.publicKey, bob.publicKey), LoanContract.Commands.LoanApproval())
                 verifies()
 

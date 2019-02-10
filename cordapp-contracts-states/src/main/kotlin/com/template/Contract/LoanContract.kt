@@ -37,8 +37,9 @@ class LoanContract : Contract {
             val outputState = tx.outputStates.get(0) as LoanState
 
             "The loan amount should be positive" using (outputState.amount > 0)
+            "The CibilRating should be null" using (outputState.cibilRating == null)
             "The loan status should be null" using (outputState.loanStatus == null)
-            "loan application should be signed by the Finance Agency" using (command.signers.contains(outputState.financeAgency.owningKey))
+            "loan application should be signed by the Finance Agency and bank" using (command.signers.containsAll(listOf(outputState.financeAgency.owningKey,outputState.bank.owningKey)))
         }
     }
 

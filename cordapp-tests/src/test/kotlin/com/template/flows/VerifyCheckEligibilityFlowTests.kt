@@ -113,8 +113,8 @@ class VerifyCheckEligibilityFlowTests {
         assertEquals(1, signedTransaction.tx.commands.size.toLong())
         val (_, signers) = signedTransaction.tx.commands[0]
 
-        assertEquals(1, signers.size.toLong())
-        assert(signers.contains(nodeB.info.legalIdentities[0].owningKey))
+        assertEquals(2, signers.size.toLong())
+        assert(signers.containsAll(listOf(nodeB.info.legalIdentities[0].owningKey, nodeC.info.legalIdentities[0].owningKey)))
     }
 
     @Test

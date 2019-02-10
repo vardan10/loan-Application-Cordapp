@@ -132,8 +132,8 @@ class VerifyEligibilityApprovalFlowTests {
         assertEquals(1, signedTransaction.tx.commands.size.toLong())
         val (_, signers) = signedTransaction.tx.commands[0]
 
-        assertEquals(2, signers.size.toLong())
-        assert(signers.containsAll(listOf(oracleNode.info.legalIdentities[0].owningKey,nodeC.info.legalIdentities[0].owningKey)))
+        assertEquals(3, signers.size.toLong())
+        assert(signers.containsAll(listOf(oracleNode.info.legalIdentities[0].owningKey,nodeB.info.legalIdentities[0].owningKey, nodeC.info.legalIdentities[0].owningKey)))
     }
 
     @Test
